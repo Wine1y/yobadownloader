@@ -1,0 +1,22 @@
+.transition-up-down {
+    transition: 0.4s;
+    opacity: 1;
+    transform: translateY(0);
+}
+  
+html.is-animating body .transition-up-down {
+    opacity: 0.6;
+    transform: translateY(100%);
+}
+
+.transition-left-right{
+    transition: 0.5s;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+html.is-animating body .transition-left-right{
+    opacity: 0.6;
+    transform: translateX(-100%);
+}
+  

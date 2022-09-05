@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YobaDownloader</title>
+    <link rel="stylesheet" href="css/page_transition.css">
+    <script defer src="js/swup.js"></script>  
+    <script defer src="js/swupInit.js"></script>
+    <script id="generalJS" defer src="js/general.js"></script>
+    <script id="pageJS" defer src="js/index.js"></script>
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/options.css">
+    <link rel="stylesheet" href="css/progress.css">
+</head>
+<body>
+    <div id="alertPrompt" class="prompt_content alert hidden">
+        <span class="prompt_title alert"></span>
+        <span class="prompt_text alert"></span>
+    </div>
+    <div id="confirmPrompt" class="prompt hidden" style="z-index: 2;">
+        <div class="prompt_content">
+            <span class="prompt_title"></span>
+            <span class="prompt_text"></span>
+            <div class="prompt_buttons">
+                <button class="prompt_button"></button>
+            </div>
+        </div>
+    </div>
+    <div id="swup" class="main ">
+        <div class="header">
+            <div class="app_top_panel">
+                <h1 data-tauri-drag-region class="app_title">YobaDownloader</h1>
+                <div data-tauri-drag-region class="window_controls">
+                    <div id="minimizeButton" class="wrapper">
+                        <img src="icons/minimize.png" class="controls_icon">
+                    </div>
+                    <div id="maximizeButton" class="wrapper">
+                        <img id="maximizeIcon" src="icons/maximize.png" class="controls_icon">
+                    </div>
+                    <div id="closeButton" class="wrapper">
+                        <img src="icons/close.png" class="controls_icon">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main_block transition-up-down">
+            <div class="video_link">
+                <img class="app_icon link_field_icon" src="icons/url.png">
+                <input placeholder="Video URL" id="videoLinkField" type="text" class="video_link_field">
+            </div>
+            <div id="videoBlock" class="video_block hidden">
+                <h2 id="videoTitle" class="skeleton video_title"></h2>
+                <div class="display_div">
+                    <div class="video_info">
+                        <div class="transition_up_down">
+                            <img class="app_icon info_icon" src="icons/views.png">
+                            <h3 id="videoViews" class="skeleton info_title"></h3>
+                        </div>
+                        <div>
+                            <img class="app_icon info_icon" src="icons/likes.png">
+                            <h3 id="videoLikes" class="skeleton info_title"></h3>
+                        </div>
+                        <div>
+                            <img class="app_icon info_icon" src="icons/comments.png">
+                            <h3 id="videoComments" class="skeleton info_title"></h3>
+                        </div>
+                    </div>
+                    <div class="preview_div">
+                        <!--This src needed to remove border from blank image-->
+                        <img id="videoPreview" class="skeleton video_preview" src="data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAABAAEAAAgEAP8FBAA7">
+                    </div>
+                </div>
+                <div class="download_div">
+                    <a id="continueLink" class="continue" href="#">
+                        <button id="continueButton" class="continue_button inactive">Continue</button>
+                    </a>     
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

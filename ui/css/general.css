@@ -1,0 +1,312 @@
+:root{
+    --background: #19181d;
+    --text: #f4f4f5;
+    --element-bg: #28272c;
+    --separator: #8538ea;
+    --separator-transparent: #8538eac2;
+    --skeleton: #28272c;
+    --skeleton-gradient: #3c3b3fc5;
+    --shadow: #161616;
+    --shadow-light: #2b2b2b;
+}
+
+@font-face {
+    font-family: 'Comfortaa Regular';
+    src: url(../fonts/Comfortaa-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'Comfortaa Bold';
+    src: url(../fonts/Comfortaa-Bold.ttf);
+}
+
+html, body{
+    background-color: var(--background);
+    margin: 0;
+    height: 100%;
+}
+
+
+h1{
+    font-family: 'Comfortaa Bold', Arial, sans-serif;
+    color: rgb(249, 253, 15);
+    margin: 0;
+    user-select: none;
+}
+
+h2{
+    font-family: 'Comfortaa Regular', Arial, sans-serif;
+    color: var(--text);
+    min-width: 50%;
+    max-width: 80%;
+    height: 3vh;
+    font-size: 18pt;
+    text-align: center;
+    line-height: 1.5vh;
+    padding-top: 1.8vh;
+    background-color: var(--element-bg);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0px 0px 6px 1px var(--separator-transparent);
+    border-radius: 1vh;
+    margin: 0;
+}
+
+h3{
+    font-family: 'Comfortaa Regular', Arial, sans-serif;
+    font-size: 18pt;
+    color: var(--text);
+    margin: 0;
+    width: 50%;
+    height: 3vh;
+    line-height: 1.5vh;
+    padding-top: 1.8vh;
+    text-align: start;
+    background-color: var(--element-bg);
+    /*border: 1px solid var(--separator);*/
+    box-shadow: 0px 0px 6px 1px var(--separator-transparent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 1vh;
+    user-select: none;
+}
+
+.main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    overflow: hidden;
+}
+
+.header{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: flex-start;
+    /*border-bottom: 3px solid var(--separator);*/
+}
+
+.app_top_panel{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.app_top_panel .window_controls{
+    flex-grow: 1;
+    display: flex;
+    margin-top: 0.5%;
+    margin-right: 1%;
+    flex-direction: row;
+    justify-content: end;
+    cursor: move;
+}
+
+.window_controls .wrapper{
+    margin-left: 2%;
+    cursor: pointer;
+}
+.window_controls .wrapper:hover{
+    filter: brightness(0.8);
+}
+.window_controls .wrapper:active .controls_icon{
+    transform: translateY(2px);
+}
+
+.window_controls .controls_icon{
+    height: 30px;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0px 0px 6px 1px var(--shadow);
+}
+
+.app_title{
+    margin-left: 1%;
+    margin-top: 0.5%;
+    text-shadow: 0px 0px 6px var(--shadow);
+    cursor: move;
+}
+
+.app_icon{
+    width: 55px;
+    background-color: var(--separator);
+    border-radius: 50%;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0px 0px 6px 1px var(--shadow);
+}
+
+.app_icon_small{
+    width: 40px;
+    background-color: var(--separator);
+    border-radius: 50%;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0px 0px 6px 1px var(--shadow);
+}
+
+.hidden{
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+.skeleton:empty{
+    overflow: hidden;
+    content: '';
+    color: transparent;
+    background:
+        var(--skeleton)
+        linear-gradient(0.25turn, transparent, var(--skeleton-gradient), transparent);
+    background-repeat: no-repeat;
+    background-size: 25%;
+    animation: loading 0.6s infinite;
+}
+
+@keyframes loading {  
+    from{
+        background-position: -25%;
+    }
+    to {
+      background-position: 130%;
+    }
+}
+
+.blured{
+    filter: blur(10px);
+}
+
+.prompt{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 50px;
+    width: 100%;
+    opacity: 1;
+    transition: opacity 0.5s;
+    height: calc(100vh - 50px);
+}
+
+.prompt.hidden{
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+
+.prompt_content{
+    background-color: var(--element-bg);
+    box-shadow: 0px 0px 6px 1px var(--separator);
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    height: 50%;
+    border-radius: 12px;
+}
+
+.prompt_title{
+    max-width: 100%;
+    min-height: 8%;
+    text-align: center;
+    margin-bottom: 5%;
+    padding-bottom: 1%;
+    box-shadow: 0px 3px 1px -1px var(--separator);
+    color: var(--text);
+    font-family: "Comfortaa Bold";
+    font-size: 165%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.prompt_text{
+    width: 100%;
+    justify-self: flex-end;
+    color: var(--text);
+    font-family: "Comfortaa Bold";
+    font-size: 125%;
+    text-align: center;
+    overflow: auto;
+    white-space: break-spaces;
+    flex-grow: 1;
+}
+
+.prompt_buttons{
+    margin-top: 2%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-evenly;
+    min-height: 12%;
+    max-height: 12%;
+    width: 100%;
+}
+
+.prompt_button{
+    width: 40%;
+    height: 100%;
+    background-color: var(--text);
+    box-shadow: 0px 0px 6px 1px var(--separator);
+    color: var(--element-bg);
+    border-radius: 6px;
+    border: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    font-family: "Comfortaa Bold";
+    font-size: 120%;
+}
+
+.prompt_button:focus{
+    outline: none;
+}
+
+.prompt_button:hover{
+    filter: brightness(0.8);
+}
+
+.prompt_button:active{
+    filter: drop-shadow(0 -0.4vh 5px var(--separator-transparent));
+    transform: translateY(0.2vh);
+}
+
+.prompt_content.alert{
+    background-color: var(--element-bg);
+    box-shadow: 0px 0px 6px 1px var(--separator);
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    height: 15%;
+    border-radius: 12px;
+    position: absolute;
+    right: 2%;
+    bottom: 2%;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.prompt_content.alert.hidden{
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+
+.prompt_title.alert{
+    font-size: 120%;
+}
+
+.prompt_text.alert{
+    font-size: 110%;
+}

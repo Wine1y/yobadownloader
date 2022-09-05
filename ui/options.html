@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options</title>
+    <link rel="stylesheet" href="css/page_transition.css">
+    <script defer src="js/swupInit.js"></script>
+    <script id="generalJS" defer src="js/general.js"></script>
+    <script id="pageJS" defer src="js/options.js"></script>
+</head>
+<body>
+    <div id="alertPrompt" class="prompt_content alert hidden">
+        <span class="prompt_title alert"></span>
+        <span class="prompt_text alert"></span>
+    </div>
+    <div id="confirmPrompt" class="prompt hidden" style="z-index: 2;">
+        <div class="prompt_content">
+            <span class="prompt_title"></span>
+            <span class="prompt_text"></span>
+            <div class="prompt_buttons">
+                <button class="prompt_button"></button>
+            </div>
+        </div>
+    </div>
+    <div id="swup" class="main">
+        <div class="header">
+            <a class="back_button transition-left-right" href="index.html">
+                <img class="back_icon app_icon_small" src="icons/back.png">
+            </a>
+            <div class="app_top_panel">
+                <h1 data-tauri-drag-region class="app_title">YobaDownloader</h1>
+                <div data-tauri-drag-region class="window_controls">
+                    <div id="minimizeButton" class="wrapper">
+                        <img src="icons/minimize.png" class="controls_icon">
+                    </div>
+                    <div id="maximizeButton" class="wrapper">
+                        <img id="maximizeIcon" src="icons/maximize.png" class="controls_icon">
+                    </div>
+                    <div id="closeButton" class="wrapper">
+                        <img src="icons/close.png" class="controls_icon">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="options_block transition-up-down">
+            <h2 id="videoTitle" class="downloading_title skeleton"></h2>
+            <div class="dropdown">
+                <button id="dropdownButton" class="dropdown_button">1080 P</button>
+                <img class="app_icon_small dropdown_icon" src="icons/dropdown.png">
+                <div id="dropdownItems" class="dropdown_content">
+                </div>
+            </div>
+            <div class="slider">
+                <div class="slider_body"></div>
+                <div class="slider_draggable" style="left: 10%;">
+                    <div class="slider_point left">
+                    </div>
+                </div>
+                <div class="slider_draggable" style="left: 89%;">
+                    <div class="slider_point right">
+                    </div>
+                </div>
+            </div>
+            <textarea rows="1" id="sliderTime" class="slider_time skeleton"></textarea>
+            <span id="pathButton" class="path_button">C:\Users\Q\Desktop</span>
+            <div class="download_div">
+                <a id="downloadLink" class="continue" href="#">
+                    <button id="downloadButton" class="continue_button">Download</button>
+                </a>  
+            </div>
+        </div>
+    </div>
+</body>
+</html>
