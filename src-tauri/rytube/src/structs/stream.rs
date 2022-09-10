@@ -146,7 +146,7 @@ fn signature_cipher_to_url(
                 Err(Error::InternalError(format!("No url or signature cipher in stream")))
             }
         },
-        SignatureCipher::Signature{url, mut s}=> {
+        SignatureCipher::Signature{url, s}=> {
             match cipher {
                 None => Err(Error::SignatureDecryptionError(format!("Can't decrypt signature without cipher"))),
                 Some(cipher) => {
@@ -154,9 +154,9 @@ fn signature_cipher_to_url(
                         Url::parse(&url),
                         Error::InternalError(format!("Stream url is invalid"))
                     );
-                    match cipher.decrypt_signature(&mut s){
+                    match cipher.decrypt_signature(s){
                         Err(err) => Err(err),
-                        Ok(_) => {
+                        Ok(s) => {
                             parsed_url.query_pairs_mut().append_pair("sig", &s);
                             //N-query decryption is not implemented yet, so downloading will be slow if url is not signed already
                             Ok(parsed_url.to_string())
