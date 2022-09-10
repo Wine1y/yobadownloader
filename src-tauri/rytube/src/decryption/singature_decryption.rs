@@ -41,12 +41,8 @@ impl Cipher {
         })
     }
 
-    pub(crate) fn decrypt_signature(&self, signature: &mut String) -> Result<(), Error> {
-        // SAFETY:
-        // At the end of the function, `signature` is checked, and, if it's not valid utf-8,
-        // completely cleared. So in case, the transformations mess something up, signature
-        // will have len 0.
-        let signature = unsafe { signature.as_mut_vec() };
+    pub(crate) fn decrypt_signature(&self, signature: String) -> Result<String, Error> {
+        let mut signature = signature.into_bytes();
 
         for js_fun_name in self.transform_plan.iter() {
             let (name, argument) = self.parse_function(js_fun_name)?;
@@ -56,17 +52,13 @@ impl Cipher {
                     "no matching transform function for `{}`", js_fun_name
                 ).into()))?
                 .0;
-            js_fun(signature, argument);
+            js_fun(&mut signature, argument);
         }
-
-        if std::str::from_utf8(signature).is_err() {
-            let err = self.invalid_utf8_err(signature);
-            // signature **must** be cleared, it does not contain valid utf-8
-            signature.clear();
-            return Err(Error::SignatureDecryptionError(err));
-        }
-
-        Ok(())
+        
+        return match String::from_utf8(signature) {
+            Ok(x) => Ok(x),
+            Err(x) => Err(Error::SignatureDecryptionError(self.invalid_utf8_err(x.as_bytes())))
+        };
     }
 
     fn parse_function<'a>(&self, js_func: &'a str) -> Result<(&'a str, Option<isize>), Error> {
