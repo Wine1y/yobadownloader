@@ -24,31 +24,35 @@ struct ClientData{
     client_name: String,
     client_version: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    client_screen: Option<String>
+    client_screen: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    android_sdk_version: Option<i32>
 }
 
 impl InnerTubeClient {
-    fn new(api_key: &str, client_name: &str, client_version: &str) -> Self{
+    fn new(api_key: &str, client_name: &str, client_version: &str, android_sdk_version: Option<i32>) -> Self{
         InnerTubeClient {
             api_key: api_key.to_owned(),
             context: Context {
                 client: ClientData {
                     client_name: client_name.to_owned(),
                     client_version: client_version.to_owned(),
-                    client_screen: None
+                    client_screen: None,
+                    android_sdk_version
                 }
             }
         }
     }
 
-    fn new_embed(api_key: &str, client_name: &str, client_version: &str, client_screen: &str) -> Self{
+    fn new_embed(api_key: &str, client_name: &str, client_version: &str, client_screen: &str, android_sdk_version: Option<i32>) -> Self{
         InnerTubeClient {
             api_key: api_key.to_owned(),
             context: Context {
                 client: ClientData {
                     client_name: client_name.to_owned(),
                     client_version: client_version.to_owned(),
-                    client_screen: Some(client_screen.to_owned())
+                    client_screen: Some(client_screen.to_owned()),
+                    android_sdk_version
                 }
             }
         }
@@ -61,14 +65,16 @@ lazy_static!{
         InnerTubeClient::new(
                             "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
                             "WEB",
-                            "2.20200720.00.02"
+                            "2.20200720.00.02",
+                            None
                         )
         ),
         ("ANDROID",
         InnerTubeClient::new(
                             "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
                             "ANDROID",
-                            "16.20"
+                            "17.31.35",
+                            Some(30)
                         )
         ),
         ("WEB_EMBED",
@@ -76,15 +82,17 @@ lazy_static!{
                             "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
                             "WEB",
                             "2.20210721.00.00",
-                            "EMBED"
+                            "EMBED",
+                            None
                         )
         ),
         ("ANDROID_EMBED",
         InnerTubeClient::new_embed(
                             "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
-                            "ANDROID",
-                            "16.20",
-                            "EMBED"
+                            "ANDROID_EMBEDDED_PLAYER",
+                            "17.31.35",
+                            "EMBED",
+                            Some(30)
                         )
         )
     ]);
@@ -154,7 +162,7 @@ impl InnerTube {
             .post(url)
             .header("Content-Type", "application/json")
             .header("accept-language", "en-US,en")
-            .header("User-Agent", "Mozilla/5.0");
+            .header("User-Agent", "com.google.android.youtube/");
         let request = match data {
             None => request.header("Content-Length", 0),
             Some(data) => request.json(&data).header("Content-Length", data.to_string().len())

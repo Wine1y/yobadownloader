@@ -2,6 +2,38 @@ var processNameElement = document.getElementById("progressProcess")
 var progressPercentElement = document.getElementById("progressPercent")
 var progressBar = document.getElementById("progressBar")
 
+var cancelLink = document.getElementById("cancelLink")
+var cancelButton = document.getElementById("cancelButton")
+var backLink = document.getElementById("backLink")
+var backButton = document.getElementById("backButton")
+var retryLink = document.getElementById("retryLink")
+var retryButton = document.getElementById("retryButton")
+var homeLink = document.getElementById("homeLink")
+var homeButton = document.getElementById("homeButton")
+
+cancelButton.onclick = function(){
+    cancelDownloading()
+    .catch(error => {
+        showError(error)
+    })
+    .then(_ =>{
+        updateActionButtons("failed")
+    })
+}
+
+backButton.onclick = function(){
+    clearInterval(window.checkInterval)
+}
+
+homeButton.onclick = function(){
+    clearInterval(window.checkInterval)
+}
+
+retryButton.onclick = function(){
+    waitForDownload()
+    updateActionButtons("downloading")
+}
+
 function startDownloading(){
     return invoke(
         'start_downloading',
@@ -31,22 +63,22 @@ function updateProgress(currentValue, maxValue, processName){
 function deserializeProgress(progress){
     switch(progress){
         case "Idle":
-            updateBreakButton("Back")
+            updateActionButtons("idle")
             return [[0,100], "Waiting..."]
         case "Done":
-            updateBreakButton("Home")
+            updateActionButtons("idle")
             return [[100,100], "Downloading finished!"]
         case "Canceled":
-            updateBreakButton("Back")
+            updateActionButtons("failed")
             return [[0,100], "Downloading canceled."]
         case "Failed":
-            updateBreakButton("Retry")
+            updateActionButtons("failed")
             return [[0,100], "Downloading failed."]
     }
 
     let keys = Object.keys(progress)
     if(keys == null || keys.length < 1){return null}
-    updateBreakButton("Cancel")
+    updateActionButtons("downloading")
     switch (keys[0]){
         case "DownloadingFFMpeg":
             downloading_progress = progress["DownloadingFFMpeg"]
@@ -93,47 +125,28 @@ function waitForDownload(){
     })
 }
 
-function updateBreakButton(buttonType){
-    link = document.getElementById("breakLink")
-    button = document.getElementById("breakButton")
-    switch (buttonType) {
-        case "Cancel":
-            link.href = "#"
-            button.innerHTML = "Cancel"
-            button.onclick = function(){
-                cancelDownloading()
-                .catch(error => {
-                    showError(error)
-                })
-                .then(_ =>{
-                    updateBreakButton("Back")
-                })
-            }
+function updateActionButtons(status){
+    let actions = [cancelLink, backLink, retryLink, homeLink]
+    actions.forEach(action => {
+        action.classList.add("hidden")
+    });
+
+    switch (status) {
+        case "idle":
+            backLink.classList.remove("hidden")
+            homeLink.classList.remove("hidden")
             break;
-        case "Back":
-            link.href = "options.html"
-            button.innerHTML = "Back"
-            button.onclick = function(){
-            	clearInterval(window.checkInterval)
-            }
+        case "downloading":
+            cancelLink.classList.remove("hidden")
             break;
-        case "Home":
-            link.href = "index.html"
-            button.innerHTML = "Home"
-            button.onclick = function(){
-            	clearInterval(window.checkInterval)
-            }
-            break;
-        case "Retry":
-            link.href = "#"
-            button.innerHTML = "Retry"
-            button.onclick = function(){
-                waitForDownload()
-                updateBreakButton("Cancel")
-            }
+        case "failed":
+            backLink.classList.remove("hidden")
+            homeLink.classList.remove("hidden")
+            retryLink.classList.remove("hidden")
             break;
     }
 }
+
 window.checkInterval = setInterval(function(){
     getDownloadingProgress()
         .then(progress => {
@@ -147,5 +160,5 @@ window.checkInterval = setInterval(function(){
         })
 }, 500)
 
-updateBreakButton("Back")
+updateActionButtons("downloading")
 waitForDownload()

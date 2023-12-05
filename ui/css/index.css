@@ -28,10 +28,16 @@
     border: none;
     border-radius: 10px;
     box-shadow: 0px 0px 6px 1px var(--separator-transparent);
+    transition: box-shadow 0.5s ease-in-out;
     color: var(--text);
 }
 .video_link_field:focus{
     outline: none;
+}
+
+.video_link_field.invalid{
+    box-shadow: 0px 0px 6px 1px var(--error);
+    transition: box-shadow 0.5s ease-in-out;
 }
 
 .video_link_field::placeholder{
@@ -113,11 +119,12 @@
 }
 
 .info_title{
-    padding-left: 5px;
+    padding-left: 10px;
     margin-left: 105px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    width: 60%;
 }
 
 .download_div{

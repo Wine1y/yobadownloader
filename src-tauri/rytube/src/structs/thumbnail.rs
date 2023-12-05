@@ -13,15 +13,15 @@ impl Thumbnail {
         Thumbnail {
             url: match json.get("url") {
                 None => None,
-                Some(value) => Some(value.to_string())
+                Some(value) => Some(value.as_str().unwrap_or_default().to_owned())
             },
             width: match json.get("width") {
                 None => None,
-                Some(value) => value.to_string().parse::<u32>().ok()
+                Some(value) => value.as_str().unwrap_or_default().parse::<u32>().ok()
             },
             height: match json.get("height") {
                 None => None,
-                Some(value) => value.to_string().parse::<u32>().ok()
+                Some(value) => value.as_str().unwrap_or_default().parse::<u32>().ok()
             }
         }
     }

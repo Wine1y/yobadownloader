@@ -34,15 +34,20 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    gap: 2%;
 }
 
-.break{
+.action{
     height: 6vh;
     width: 30%;
     margin-bottom: 4vh;
 }
 
-.break_button{
+.action.hidden{
+    display: none;
+}
+
+.action_button{
     height: 100%;
     width: 100%;
     border: none;

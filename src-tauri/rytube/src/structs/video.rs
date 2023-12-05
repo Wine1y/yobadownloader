@@ -71,23 +71,20 @@ impl Video {
             return Err(Error::ParsingError(format!("Player response is invalid")));
         }
         let vd = vd.unwrap();
-        let (views, likes, comments) = match parse_likes_views_and_comments(&initial_data){
-            None => (None, None, None),
-            Some(tuple) => {(Some(tuple.0), Some(tuple.1), Some(tuple.2))}
-        };
+        let (likes, views, comments) = parse_likes_views_and_comments(&initial_data);
         Ok(
             Video {
                 id: match vd.get("videoId"){
                     None => None,
-                    Some(value) => Some(value.to_string())
+                    Some(value) => Some(value.as_str().unwrap_or_default().to_owned())
                 },
                 title: match vd.get("title"){
                     None => None,
-                    Some(value) => Some(value.to_string())
+                    Some(value) => Some(value.as_str().unwrap_or_default().to_owned())
                 },
                 desc: match vd.get("shortDescription"){
                     None => None,
-                    Some(value) => Some(value.to_string())
+                    Some(value) => Some(value.as_str().unwrap_or_default().to_owned())
                 },
                 length_seconds: match vd.get("lengthSeconds"){
                     None => None,
@@ -95,11 +92,11 @@ impl Video {
                 },
                 author_name: match vd.get("author"){
                     None => None,
-                    Some(value) => Some(value.to_string())
+                    Some(value) => Some(value.as_str().unwrap_or_default().to_owned())
                 },
                 author_id: match vd.get("channelId"){
                     None => None,
-                    Some(value) => Some(value.to_string())
+                    Some(value) => Some(value.as_str().unwrap_or_default().to_owned())
                 },
                 views,
                 likes,
@@ -132,40 +129,60 @@ impl Video {
     }
 }
 
-fn parse_likes_views_and_comments(initial_data: &Value) -> Option<(String, String, String)>{
-    let contents = 
-            initial_data
-            .get("contents")?
-            .get("twoColumnWatchNextResults")?
-            .get("results")?
-            .get("results")?
-            .get("contents")?;
-    let views_label = 
-        contents
-        .get(0)?
-        .get("videoPrimaryInfoRenderer")?
-        .get("viewCount")?
-        .get("videoViewCountRenderer")?
-        .get("viewCount")?
-        .get("simpleText")?
-        .as_str()?;
+fn parse_likes_views_and_comments(initial_data: &Value) -> (Option<String>, Option<String>, Option<String>){
+    (parse_likes(initial_data), parse_views(initial_data), parse_comments(initial_data))
+}
 
-    let likes_label = 
-        contents
+fn parse_likes(initial_data: &Value) -> Option<String>{
+    let likes_label = initial_data
+        .get("contents")?
+        .get("twoColumnWatchNextResults")?
+        .get("results")?
+        .get("results")?
+        .get("contents")?
         .get(0)?
         .get("videoPrimaryInfoRenderer")?
         .get("videoActions")?
         .get("menuRenderer")?
         .get("topLevelButtons")?
         .get(0)?
+        .get("segmentedLikeDislikeButtonRenderer")?
+        .get("likeButton")?
         .get("toggleButtonRenderer")?
         .get("defaultText")?
         .get("accessibility")?
         .get("accessibilityData")?
         .get("label")?
-        .as_str()?;
-    let comments_label =
-        contents
+        .as_str()?
+        .replace('\u{00a0}', " ");
+    Some(likes_label)
+}
+
+fn parse_views(initial_data: &Value) -> Option<String>{
+    let views_label = initial_data
+        .get("contents")?
+        .get("twoColumnWatchNextResults")?
+        .get("results")?
+        .get("results")?
+        .get("contents")?
+        .get(0)?
+        .get("videoPrimaryInfoRenderer")?
+        .get("viewCount")?
+        .get("videoViewCountRenderer")?
+        .get("viewCount")?
+        .get("simpleText")?
+        .as_str()?
+        .replace('\u{00a0}', " ");
+    Some(views_label)
+}
+
+fn parse_comments(initial_data: &Value) -> Option<String>{
+    let comments_label = initial_data
+        .get("contents")?
+        .get("twoColumnWatchNextResults")?
+        .get("results")?
+        .get("results")?
+        .get("contents")?
         .get(2)?
         .get("itemSectionRenderer")?
         .get("contents")?
@@ -173,31 +190,9 @@ fn parse_likes_views_and_comments(initial_data: &Value) -> Option<(String, Strin
         .get("commentsEntryPointHeaderRenderer")?
         .get("commentCount")?
         .get("simpleText")?
-        .as_str()?;
-    
-    let views_label = views_label.replace('\u{00a0}', " ");
-    let likes_label = likes_label.replace('\u{00a0}', " ");
-    let comments_label = comments_label.replace('\u{00a0}', " ");
-
-    lazy_static! {
-        static ref RE: Regex = Regex::new(r"^[0-9\s]+")
-            .unwrap();
-    }
-    let views = match RE.captures(views_label.as_str()){
-        None => None,
-        Some(captures) => match captures.get(0) {
-            None => None,
-            Some(views_match) => Some(views_match.as_str().trim())
-        }
-    };
-    let likes = match RE.captures(likes_label.as_str()) {
-        None => None,
-        Some(captures) => match captures.get(0) {
-            None => None,
-            Some(likes_match) => Some(likes_match.as_str().trim())
-        }
-    };
-    Some((views?.to_owned(), likes?.to_owned(), comments_label))
+        .as_str()?
+        .replace('\u{00a0}', " ");
+    Some(comments_label)
 }
 
 fn get_streams(player_response: &Value, base_js: Option<String>) -> Option<Vec<Stream>>{

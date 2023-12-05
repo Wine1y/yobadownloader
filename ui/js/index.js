@@ -18,6 +18,7 @@ videoLinkField.oninput = function(){
             setVideoData(id)
             .then(result => {
                 if (result == true){
+                    videoLinkField.classList.remove("invalid")
                     window.currentFmt = null
                     window.savePath = null
                     window.start_seconds = null
@@ -33,21 +34,21 @@ videoLinkField.oninput = function(){
                     videoBlock.classList.add("hidden")
                     continueButton.classList.add("inactive")
                     continueLink.href = "#"
-                    //TODO: Add animation to link_field
-                    console.log("Link is unavailable")
+                    videoLinkField.classList.add("invalid")
                 }
             })
             .catch(error => {
                 videoBlock.classList.add("hidden")
                 continueButton.classList.add("inactive")
                 continueLink.href = "#"
+                videoLinkField.classList.add("invalid")
                 showError(error)
             })
         }else{
-            //TODO: Add animation to link field
             videoBlock.classList.add("hidden")
             continueButton.classList.add("inactive")
             continueLink.href = "#"
+            videoLinkField.classList.add("invalid")
         }
     })
 }
@@ -80,28 +81,39 @@ function loadVideoData(videoData){
     continueButton.classList.remove("inactive")
     continueLink.href = "options.html"
     if (videoData.title != null){
-        videoTitle.innerHTML = videoData.title.replaceAll("\\", "").slice(1, -1)
+        videoTitle.innerHTML = videoData.title
     }
+
     if (videoData.views_count != null){
         videoViews.innerHTML = videoData.views_count
+    }else{
+        videoViews.innerHTML = "Views unavailable"
     }
+
     if (videoData.likes_count != null){
         videoLikes.innerHTML = videoData.likes_count
+    }else{
+        videoLikes.innerHTML = "Likes unavailable"
     }
+
     if (videoData.comments_count != null){
         videoComments.innerHTML = videoData.comments_count
+    }else{
+        videoComments.innerHTML = "Comments unavailable"
     }
+
     if (videoData.previews != null && videoData.previews.length > 0){
         let bestPreviewLink = findClosestPreview(videoData.previews)
         if (bestPreviewLink != null){
-            videoPreview.src = bestPreviewLink.slice(1,-1)
+            videoPreview.src = bestPreviewLink
         }
     }
 }
 
 getCurrentVideo()
 .then(videoData => {
-    videoLinkField.value = `https://https://www.youtube.com/watch?v=${videoData.id}`
+    console.log(videoData)
+    videoLinkField.value = `https://www.youtube.com/watch?v=${videoData.id}`
     loadVideoData(videoData)
     videoBlock.classList.remove("hidden")
 })

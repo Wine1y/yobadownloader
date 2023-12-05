@@ -73,7 +73,13 @@ pub async fn get_base_js(client: &Client, link: Option<String>) -> Option<String
 
 pub async fn get_player_and_initial_json(video_id: &str,  webpage: &str, client: &Client) -> Result<(Value, Value), Error>{
     let player_response = match get_innertube_player_response(&video_id, client).await{
-        Some(response) => Some(response),
+        Some(response) => {
+            if response.get("videoDetails").is_some() && response.get("streamingData").is_some(){
+                Some(response)
+            }else{
+                parse_json_player_response(&webpage)
+            }
+        },
         None => parse_json_player_response(&webpage)
     };
     let initial_data = parse_json_initial_data(&webpage);

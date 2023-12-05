@@ -86,15 +86,6 @@ impl DownloadProgress {
             _ => {}
         }
     }
-
-    pub fn set_ffmpeg_progress(&mut self, progress: u32){
-        match self {
-            DownloadProgress::EncodingAudio(tuple) | DownloadProgress::MergingStreams(tuple) | DownloadProgress::CuttingStream(tuple) => {
-                tuple.0 = progress
-            },
-            _ => {}
-        }
-    }
 }
 
 #[derive(Serialize,Deserialize, Clone)]

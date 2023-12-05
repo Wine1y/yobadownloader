@@ -135,7 +135,11 @@ pub async fn start_downloading<'r>(
         Ok(video_path) => {
             if save_path.ends_with(".mp3") && !video_path.ends_with(".mp3"){
                 managed_progress.lock().unwrap().0 = DownloadProgress::EncodingAudio((0, time_line[2]));
-                ffmpeg_utils::convert_to_mp3(&video_path, Arc::clone(&managed_progress)).await
+                let res = ffmpeg_utils::convert_to_mp3(&video_path).await;
+                if res.is_ok(){
+                    managed_progress.lock().unwrap().0 = DownloadProgress::EncodingAudio((time_line[2], time_line[2]));
+                }
+                res
             }else{
                 Ok(video_path)
             }
@@ -147,7 +151,11 @@ pub async fn start_downloading<'r>(
             downloader::clear_downloaded_files(probably_created);
             return Err(DownloaderError::CanceledByUser);
         }
-        Err(_) => {managed_progress.lock().unwrap().0 = DownloadProgress::Failed; result}
+        Err(_) => {
+            downloader::clear_downloaded_files(probably_created);
+            managed_progress.lock().unwrap().0 = DownloadProgress::Failed;
+            result
+        }
         Ok(video_path) => {
             if time_line[0] > 0 || time_line[1] < time_line[2]{
                 managed_progress.lock().unwrap().0 = DownloadProgress::CuttingStream((0, time_line[1]-time_line[0]));
@@ -155,18 +163,19 @@ pub async fn start_downloading<'r>(
                     &video_path,
                     time_line[0],
                     time_line[1],
-                    &save_path,
-                    Arc::clone(&managed_progress)).await;
+                    &save_path).await;
                 match cutting_res{
                     Err(DownloaderError::CanceledByUser) => {
                         downloader::clear_downloaded_files(probably_created);
                         return Err(DownloaderError::CanceledByUser);
                     },
                     Err(err) => {
+                        downloader::clear_downloaded_files(probably_created);
                         managed_progress.lock().unwrap().0 = DownloadProgress::Failed;
                         Err(err)
                     },
                     Ok(path) => {
+                        managed_progress.lock().unwrap().0 = DownloadProgress::CuttingStream((time_line[1]-time_line[0], time_line[1]-time_line[0]));
                         managed_progress.lock().unwrap().0 = DownloadProgress::Done;
                         Ok(path)
                     }

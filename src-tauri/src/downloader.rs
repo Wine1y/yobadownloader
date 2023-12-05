@@ -12,7 +12,7 @@ fn get_headers() -> header::HeaderMap{
     let mut headers = header::HeaderMap::new();
 
     headers.insert(header::ACCEPT_LANGUAGE, "en-US,en".parse().unwrap());
-    headers.insert(header::USER_AGENT, "Mozilla/5.0".parse().unwrap());
+    headers.insert(header::USER_AGENT, "com.google.android.youtube/".parse().unwrap());
     headers.insert(header::CONNECTION, "keep-alive".parse().unwrap());
 
     headers
@@ -137,11 +137,14 @@ pub async fn download_and_merge_audio(
     let audio_saved_to = download_stream(&audio_path, audio_stream, progress.clone()).await?;
 
     progress.lock().unwrap().0 = DownloadProgress::MergingStreams((0, video_duration));
-    ffmpeg_utils::merge_videos(
+    let res = ffmpeg_utils::merge_videos(
         &video_saved_to,
         &audio_saved_to,
-        &output_path,
-        progress.clone()).await
+        &output_path).await;
+    if res.is_ok(){
+        progress.lock().unwrap().0 = DownloadProgress::MergingStreams((0, video_duration));
+    }
+    res
 }
 
 pub(crate) fn clear_downloaded_files(paths: Vec<String>){

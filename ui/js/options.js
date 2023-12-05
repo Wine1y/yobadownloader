@@ -342,7 +342,7 @@ function setVideoFormats(formats){
 function loadVideoData(){
     getCurrentVideo()
     .then((videoData) => {
-        videoTitle.innerHTML = videoData.title.replaceAll("\\", "").slice(1, -1)
+        videoTitle.innerHTML = videoData.title
         createTimelineSlider(videoData.duration)
         document.getElementById("sliderTime").classList.remove("skeleton")
         setVideoFormats(videoData.streams)  
