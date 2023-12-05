@@ -28,6 +28,12 @@ rytube = { path = "rytube"}
 flate2 = "1.0.24"
 tokio = { version = "1", features = ["fs"] }
 
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true #
 
 [features]
 # by default Tauri runs in production mode

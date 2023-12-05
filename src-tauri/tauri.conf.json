@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "yobadownloader",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "tauri": {
     "allowlist": {
@@ -43,7 +43,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.yobaclub.yobadownloader",
+      "identifier": "com.winely.yobadownloader",
       "longDescription": "Simple YouTube downloader. Made with Rust and Tauri.",
       "macOS": {
         "entitlements": null,

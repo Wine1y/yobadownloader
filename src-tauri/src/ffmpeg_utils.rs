@@ -1,9 +1,11 @@
 use ffmpeg_cli::{FfmpegBuilder, File as FFMpegFile, Parameter};
+use std::os::windows::process::CommandExt;
 use std::{env, path::PathBuf};
 use crate::structs::DownloaderError;
 use std::path::Path;
 use std::fs::remove_file;
 
+const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 pub fn find_ffmpeg() -> Result<PathBuf, DownloaderError>{
     let path = env::var("Path");
@@ -44,8 +46,14 @@ pub async fn merge_videos(
                 .option(Parameter::KeyValue("c:v", "copy"))
                 .option(Parameter::KeyValue("c:a", "aac"))
             );
-    let ffmpeg = builder.run().await.unwrap();
-    let output = ffmpeg.process.wait_with_output().unwrap();
+    let ffmpeg = builder
+                    .to_command()
+                    .creation_flags(CREATE_NO_WINDOW)
+                    .spawn();
+    if ffmpeg.is_err(){
+        return Err(DownloaderError::MergingError("Failed to spawn ffmpeg process".to_owned()))
+    }
+    let output = ffmpeg.unwrap().wait_with_output().unwrap();
 
     if Path::new(video_path).is_file(){
         let _ = remove_file(Path::new(video_path));
@@ -79,8 +87,14 @@ pub async fn cut_video(
                 .option(Parameter::KeyValue("ss", &start_seconds))
                 .option(Parameter::KeyValue("to", &end_seconds))
             );
-    let ffmpeg = builder.run().await.unwrap();
-    let output = ffmpeg.process.wait_with_output().unwrap();
+    let ffmpeg = builder
+                    .to_command()
+                    .creation_flags(CREATE_NO_WINDOW)
+                    .spawn();
+    if ffmpeg.is_err(){
+        return Err(DownloaderError::CuttingError("Failed to spawn ffmpeg process".to_owned()))
+    }
+    let output = ffmpeg.unwrap().wait_with_output().unwrap();
 
     if Path::new(video_path).is_file(){
         let _ = remove_file(Path::new(video_path));
@@ -106,8 +120,14 @@ pub async fn convert_to_mp3(
                 FFMpegFile::new(&output_path)
                 .option(Parameter::Single("vn"))
             );
-    let ffmpeg = builder.run().await.unwrap();
-    let output = ffmpeg.process.wait_with_output().unwrap();
+    let ffmpeg = builder
+                    .to_command()
+                    .creation_flags(CREATE_NO_WINDOW)
+                    .spawn();
+    if ffmpeg.is_err(){
+        return Err(DownloaderError::ConvertingError("Failed to spawn ffmpeg process".to_owned()))
+    }
+    let output = ffmpeg.unwrap().wait_with_output().unwrap();
         
     if Path::new(video_path).is_file(){
         let _ = remove_file(Path::new(video_path));
